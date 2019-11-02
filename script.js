@@ -26,9 +26,6 @@ function trackedPlayers() {
         console.log(current)
     }, 10000)
 }
-//testing from pc
-//git from laptop to pc
-//testing git 
 
 function difference() {
     current = api.getEventIDs()
