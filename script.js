@@ -27,6 +27,8 @@ function trackedPlayers() {
     }, 10000)
 }
 
+//testing
+
 function difference() {
     current = api.getEventIDs()
     diff = api.compareEvents(current, previous)
