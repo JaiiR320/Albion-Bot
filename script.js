@@ -1,10 +1,11 @@
 const discord = require("discord.js")
 const api = require("./api.js")
+const fetch = require('fetch')
 const client = new discord.Client()
 const config = require("./config.json")
 const fs = require('fs')
 var track = JSON.parse(fs.readFileSync("track.JSON"))
-
+const url = 'https://gameinfo.albiononline.com/api/gameinfo/events'
 var current = new Array(20)
 var previous = new Array(20)
 var diff = new Array()
@@ -37,7 +38,7 @@ function difference() {
     console.log("Diff: \n" + diff)
     previous = current
 }
-
+/*
 function main() {
     api.initBody()
     setTimeout(() => {
@@ -45,6 +46,14 @@ function main() {
         console.log(api.getKiller())
         api.logDetails(0)
     }, 5000)
+}
+*/
+
+async function main(){
+    const response = await fetch(url)
+    console.log(response)
+    const data = await response.json()
+    console.log(data)
 }
 
 client.on("ready", () => {
