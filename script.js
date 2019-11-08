@@ -1,13 +1,16 @@
 const discord = require("discord.js")
 const api = require("./api.js")
+const fetch = require('fetch')
 const client = new discord.Client()
 const config = require("./config.json")
 const fs = require('fs')
 var track = JSON.parse(fs.readFileSync("track.JSON"))
-
+const url = 'https://gameinfo.albiononline.com/api/gameinfo/events'
 var current = new Array(20)
 var previous = new Array(20)
 var diff = new Array()
+const axios = require('axios')
+
 
 function trackedPlayers() {
     api.initBody()
@@ -27,8 +30,6 @@ function trackedPlayers() {
     }, 10000)
 }
 
-//testing
-
 function difference() {
     current = api.getEventIDs()
     diff = api.compareEvents(current, previous)
@@ -36,18 +37,36 @@ function difference() {
     previous = current
 }
 
-function main() {
+function a() {
     api.initBody()
-    setTimeout(() => {
+    if(api.body != undefined){
         api.body = JSON.parse(api.body)
         console.log(api.getKiller())
         api.logDetails(0)
-    }, 5000)
+        api.initBody()
+    }
+}
+
+function main() {
+    axios.get(url)
+    .then((response) => {
+        api.body = response.data
+        if(api.body != undefined){
+            api.body = JSON.parse(api.body)
+            console.log(api.getKiller())
+            api.logDetails(0)
+            api.initBody()
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    })
 }
 
 client.on("ready", () => {
     console.log("ready\n")
-    client.setInterval(main, 6000)
+    api.initBody()
+    client.setInterval(main, 5000)
 })
 /*
 client.on("ready", () => {
