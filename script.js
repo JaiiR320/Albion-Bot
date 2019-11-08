@@ -9,6 +9,8 @@ const url = 'https://gameinfo.albiononline.com/api/gameinfo/events'
 var current = new Array(20)
 var previous = new Array(20)
 var diff = new Array()
+const axios = require('axios')
+
 
 function trackedPlayers() {
     api.initBody()
@@ -28,37 +30,43 @@ function trackedPlayers() {
     }, 10000)
 }
 
-//testing
-//new edit
-//termina edt pls work
-
 function difference() {
     current = api.getEventIDs()
     diff = api.compareEvents(current, previous)
     console.log("Diff: \n" + diff)
     previous = current
 }
-/*
-function main() {
+
+function a() {
     api.initBody()
-    setTimeout(() => {
+    if(api.body != undefined){
         api.body = JSON.parse(api.body)
         console.log(api.getKiller())
         api.logDetails(0)
-    }, 5000)
+        api.initBody()
+    }
 }
-*/
 
-async function main(){
-    const response = await fetch(url)
-    console.log(response)
-    const data = await response.json()
-    console.log(data)
+function main() {
+    axios.get(url)
+    .then((response) => {
+        api.body = response.data
+        if(api.body != undefined){
+            api.body = JSON.parse(api.body)
+            console.log(api.getKiller())
+            api.logDetails(0)
+            api.initBody()
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    })
 }
 
 client.on("ready", () => {
     console.log("ready\n")
-    client.setInterval(main, 6000)
+    api.initBody()
+    client.setInterval(main, 5000)
 })
 /*
 client.on("ready", () => {

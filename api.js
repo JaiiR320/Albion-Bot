@@ -101,13 +101,13 @@ module.exports = {
     initBody: function () {
         axios.get(url)
             .then((response) => {
-                body = response.data
+                this.body = response.data
             })
     },
 
     getEventIds: function () {
         for (let i = 0; i < 20; i++) {
-            ids[i] = body[i].EventId.toString()
+            ids[i] = this.body[i].EventId.toString()
         }
     },
 
@@ -130,7 +130,7 @@ module.exports = {
     getKiller: function () {
         var killObj = new Array(20)
         for (let i = 0; i < 20; i++) {
-            killObj[i] = body[i].Killer.Name
+            killObj[i] = this.body[i].Killer.Name
             if (this.binarySearch(track.Players, killObj[i]) != -1) {
                 return this.logDetails(i)
             }
@@ -146,7 +146,7 @@ module.exports = {
     },
 
     logDetails: function (index) {
-        var kill = body[index]
+        var kill = this.body[index]
         console.log(kill.Killer.Name + " has killed " + kill.Victim.Name)
         console.log("by using " + kill.Killer.Equipment.MainHand.Type)
     }
