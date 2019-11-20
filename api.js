@@ -1,36 +1,11 @@
-const url = 'https://gameinfo.albiononline.com/api/gameinfo/events'
-const fs = require("fs")
-var track = JSON.parse(fs.readFileSync("track.JSON"))
-
-const request = require('request')
-const axios = require('axios')
-
-
-function delay(ms) {
-    var d = new Date();
-    var d2 = null;
-    do {
-        d2 = new Date();
-    }
-    while (d2 - d < ms);
-}
-
-
-var ids = new Array(20)
-var body
-
 module.exports = {
-    ids,
-    body,
-
     /**
      * Uses a binary search algorithm to locate a value in the specified array. 
      * @param {Array} items The array containing the item. 
      * @param {variant} value The value to search for. 
      * @return {int} The zero-based index of the value in the array or -1 if not found. 
      */
-    binarySearch: function (input, value) {
-        var items = JSON.parse(input)
+    binarySearch: function (items, value) {
         var startIndex = 0,
             stopIndex = items.length - 1,
             middle = Math.floor((stopIndex + startIndex) / 2);
@@ -50,25 +25,6 @@ module.exports = {
 
         //make sure it's the right value
         return (items[middle] != value) ? -1 : middle;
-    },
-    /**
-     * These are functions to get event IDs
-     * and compare the arrays to get a new
-     * array for the most recent events not
-     * yet accounted for
-     */
-
-    /**
-     * 
-     * @param {*} ms 
-     */
-    delay: function (ms) {
-        var d = new Date();
-        var d2 = null;
-        do {
-            d2 = new Date();
-        }
-        while (d2 - d < ms);
     },
 
     /**
@@ -95,59 +51,16 @@ module.exports = {
         return diff;
     },
 
-    /**
-     * returns an array of 20 with most recent events
-     */
-    initBody: function () {
-        axios.get(url)
-            .then((response) => {
-                this.body = response.data
-            })
-    },
-
-    getEventIds: function () {
-        for (let i = 0; i < 20; i++) {
-            ids[i] = this.body[i].EventId.toString()
-        }
-    },
-
-    /**
-     * Functions for getting data
-     * for events. Intakes a single 
-     * event and outputs names/items etc
-     */
-
-    /**
-     * returns the victim of an event
-     */
-    getVictim: function () {
-
-    },
-
-    /**
-     * returns the primary killer of an event
-     */
-    getKiller: function () {
-        var killObj = new Array(20)
-        for (let i = 0; i < 20; i++) {
-            killObj[i] = this.body[i].Killer.Name
-            if (this.binarySearch(track.Players, killObj[i]) != -1) {
-                return this.logDetails(i)
-            }
-        }
-        return killObj
-    },
-
-    /**
-     * returns an array of assists
-     */
-    getAssist: function () {
-
-    },
-
-    logDetails: function (index) {
-        var kill = this.body[index]
+    logDetails: function (kill) {
         console.log(kill.Killer.Name + " has killed " + kill.Victim.Name)
-        console.log("by using " + kill.Killer.Equipment.MainHand.Type)
+        if (kill.Killer.Equipment.MainHand != null) {
+            console.log("by using " + kill.Killer.Equipment.MainHand.Type)
+        } else {
+            console.log("by using their bare hands")
+        }
+    },
+
+    messageDetails: function (kill){
+
     }
 }
